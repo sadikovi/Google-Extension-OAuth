@@ -3,7 +3,7 @@ Google-Extension-OAuth
 
 Google OAuth library for extensions
 
-### What is it
+#### What is it
 It is a Google OAuth library for extensions, though can be easily edited to support any others.
 You have to add three files:
 
@@ -11,13 +11,13 @@ You have to add three files:
   <strong>reqmanager.js</strong> - general request methods, like encoding/decoding adding url parameters<br/>
   <strong>oauth.js</strong> - provides authentication methods
 
-### How to use
+#### How to use
 You can see files in "additions" to see how to use this library.
 
 <strong>start.js</strong> is a background script that runs once browser is loaded.<br/>
 <strong>api.js</strong> contains Gmail API to use, also has methods to send batch requests and parse batch requests results.
 
-### OAuth (oauth.js)
+#### OAuth (oauth.js)
 To authorize application you have to fill <strong>oauth</strong> object
 <pre>
 var oauth = {
@@ -70,7 +70,7 @@ There is also function to check and refresh access token if necessary
 
 In case of refreshing access token, it is saved and returned in success callback. Error callback is called when it is impossible to refresh.
 
-###Token Store
+#### Token Store (tokenstore.js)
 If you need to get current access and refresh tokens (or set them) call:
 <pre>
   // get access token
@@ -89,10 +89,46 @@ Client id and scope can be provided by <strong>oauth</strong> object:
   TokenStore.getAccessToken(oauth.client_id, oauth.scope);
 </pre>
 
-### ReqManager
+#### ReqManager(reqmanager.js)
 Contains general methods to work with url - sending requests (including batch requests), adding and retrieving url parameters and etc.
 
 Again, to use those files, just have a look at <strong>additions/api.js</strong> and <strong>start.js</strong>.
 
-### Perform batch request and process response
+#### Perform batch request and process response
+It currently supports only GET requests.
+##### Building request body
 First of all you have to build parts of the request, which is an object and can look like this:
+
+<strong>{content_type: "#", url: "#", method: "#"}</strong>
+
+For example:
+<pre>
+  {
+    content_type: "application/http", 
+    url: "https://www.googleapis.com/gmail/v1/users/userId/labels", 
+    method: "GET"
+  }
+</pre>
+
+Call method <strong>ReqManager.buildBatchRequestBody(parts)</strong> passing array of those objects as a parameter.
+Then call <strong>ReqManager.sendRequest</strong> to send a batch request.
+
+##### Sending and parsing results
+To minimize all those steps of ReqManager <strong>api.js</strong> provides methods to send and parse batch results.
+
+<pre>
+  API.sendBatchRequest(url, access_token, parts, success, error);
+</pre>
+where url is a url you want to send a batch request, access_token is a valid access token, parts is an array of part objects (see above), success is a success callback function that returns an array of responses that are already parsed into objects, error is a error callback.
+
+api.js uses helper methods, but you can use them as well:
+
+Parsing request body:
+<pre>
+  API.parseResponseBody(body);
+</pre>
+
+Helper function to parse header into key-multivalue pair, separated by ";".
+<pre>
+  API.parseHeader(header);
+</pre>
