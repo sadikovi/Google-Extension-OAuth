@@ -45,7 +45,7 @@ If you want deauthorize app, just call
 <pre>
   OAuth.deauthorize(after);
 </pre>
-where is <strong>after</strong> is callback function that called straight after app is deauthorized.
+where <strong>after</strong> is callback function that is called straight after app is deauthorized.
 
 If you want to check access token before sending any requests, call:
 <pre>
@@ -83,10 +83,16 @@ If you need to get current access and refresh tokens (or set them) call:
   TokenStore.setAccessToken(client_id, scope);
 </pre>
 
-Client id an scope can be provided by <strong>oauth</strong> object:
+Client id and scope can be provided by <strong>oauth</strong> object:
 <pre>
   // get access token
   TokenStore.getAccessToken(oauth.client_id, oauth.scope);
 </pre>
 
 ### ReqManager
+Contains general methods to work with url - sending requests (including batch requests), adding and retrieving url parameters and etc.
+
+Again, to use those files, just have a look at <strong>additions/api.js</strong> and <strong>start.js</strong>.
+
+### Perform batch request and process response
+First of all you have to build parts of the request, which is an object and can look like this:
