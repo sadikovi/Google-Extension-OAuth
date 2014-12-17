@@ -7,32 +7,19 @@ Google OAuth library for extensions
 It is a Google OAuth library for extensions, though can be easily edited to support any others.
 You have to add three files:
 
-  <strong>tokenstore.js</strong>
-  
-  <strong>reqmanager.js</strong>
-  
-  <strong>oauth.js</strong>
+  <strong>tokenstore.js</strong> - stores and retrieves files from local storage<br/>
+  <strong>reqmanager.js</strong> - general request methods, like encoding/decoding adding url parameters<br/>
+  <strong>oauth.js</strong> - provides authentication methods
 
 ### How to use
 You can see files in "additions" to see how to use this library.
 
-<strong>start.js</strong> is a background script that runs once browser is loaded.
-
+<strong>start.js</strong> is a background script that runs once browser is loaded.<br/>
 <strong>api.js</strong> contains Gmail API to use, also has methods to send batch requests and parse batch requests results.
 
-### OAuth
-To authorize application you have to fill oauth file
+### OAuth (oauth.js)
+To authorize application you have to fill <strong>oauth</strong> object
 <pre>
-/** oauth object with all the necessary information including:
- *      request_url: to obtain code
- *      exchange_url: to exchange code on access token
- *      check_url: to check whether access token is valid or not
- *      clien_id: a client id of the application
- *      client_secret: a client secret of the application
- *      scope: a permission you are obtaining
- *      response_type: a authorization parameter when you are exhange code on token
- *      redirect_uri: url for redirection
- */
 var oauth = {
     request_url: 'https://accounts.google.com/o/oauth2/auth',
     exchange_url: 'https://www.googleapis.com/oauth2/v3/token',
@@ -52,13 +39,13 @@ After that you can perform authorization call (i.e. on content loaded action)
   });
 </pre>
 
-success callback returns access token as a parameter and error callback returns error message (you may want to parse it as json object).
+<strong>success</strong> callback returns access token as a parameter and <strong>error</strong> callback returns error message (you may want to parse it as json object).
 
 If you want deauthorize app, just call
 <pre>
-  OAuth.deauthorize(afterCallback);
+  OAuth.deauthorize(after);
 </pre>
-
+where is <strong>after</strong> is callback function that called straight after app is deauthorized.
 
 If you want to check access token before sending any requests, call:
 <pre>
@@ -86,9 +73,20 @@ In case of refreshing access token, it is saved and returned in success callback
 ###Token Store
 If you need to get current access and refresh tokens (or set them) call:
 <pre>
+  // get access token
   TokenStore.getAccessToken(client_id, scope);
+  // get refresh token
   TokenStore.getRefreshToken(client_id, scope);
-  
+  // set access token
   TokenStore.setAccessToken(client_id, scope);
+  // set refresh token
   TokenStore.setAccessToken(client_id, scope);
 </pre>
+
+Client id an scope can be provided by <strong>oauth</strong> object:
+<pre>
+  // get access token
+  TokenStore.getAccessToken(oauth.client_id, oauth.scope);
+</pre>
+
+### ReqManager
